@@ -1,0 +1,31 @@
+name: Create Pre-Production Branch
+
+on:
+  workflow_dispatch: # 手動実行用
+    inputs:
+      branch_name:
+        description: "Branch name to create"
+        required: false
+        default: "pre-production"
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # ブランチ作成に必要
+
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v4
+        with:
+          ref: master # masterブランチをチェックアウト
+
+      - name: Create new branch from master
+        run: |
+          git checkout -b ${{ github.event.inputs.branch_name }}
+          git push origin ${{ github.event.inputs.branch_name }}
+
+      - name: Confirm branch creation
+        run: |
+          echo "Branch '${{ github.event.inputs.branch_name }}' created from master."
