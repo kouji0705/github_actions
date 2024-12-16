@@ -1,31 +1,35 @@
-name: Create Pre-Production Branch
+name: Create Pre-Production Branch with Develop Changes
 
 on:
   workflow_dispatch: # 手動実行用
-    # inputs:
-    #   branch_name:
-    #     description: "Branch name to create"
-    #     required: false
-    #     default: "pre-production"
 
 jobs:
   create-branch:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write # ブランチ作成に必要
 
     steps:
-      - name: Checkout master branch
+      - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: main # masterブランチをチェックアウト
+          ref: main # mainブランチをチェックアウト
 
-      - name: Create new branch from master
+      - name: Create pre-production branch
         run: |
           git checkout -b pre-production
           git push origin pre-production
 
-      - name: Confirm branch creation # ブランチ作成の確認
+      - name: Fetch develop branch
         run: |
-          echo "Branch pre-production created from master."
+          git fetch origin develop:develop
+
+      - name: Rebase develop onto pre-production
+        run: |
+          git checkout pre-production
+          git rebase develop
+          git push --force origin pre-production
+
+      - name: Confirm rebase
+        run: |
+          echo "Branch pre-production rebased with develop."
