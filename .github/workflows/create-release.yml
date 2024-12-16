@@ -19,13 +19,13 @@ jobs:
       - name: Checkout master branch
         uses: actions/checkout@v4
         with:
-          ref: master # masterブランチをチェックアウト
+          ref: main # masterブランチをチェックアウト
 
       - name: Create new branch from master
         run: |
           git checkout -b ${{ github.event.inputs.branch_name }}
           git push origin ${{ github.event.inputs.branch_name }}
 
-      - name: Confirm branch creation
+      - name: Confirm branch creation # ブランチ作成の確認
         run: |
           echo "Branch '${{ github.event.inputs.branch_name }}' created from master."
