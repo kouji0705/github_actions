@@ -1,19 +1,20 @@
-name: Create Pre-Production Branch with Develop Changes
+name: Create Pre-Production Branch and Pull Request
 
 on:
   workflow_dispatch: # 手動実行用
 
 jobs:
-  create-branch:
+  create-branch-and-pr:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # ブランチ作成に必要
+      contents: write   # ブランチ作成・Pushに必要
+      pull-requests: write # Pull Request作成に必要
 
     steps:
       - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: main # mainブランチをチェックアウト
+          ref: main
 
       - name: Create pre-production branch
         run: |
@@ -30,6 +31,12 @@ jobs:
           git rebase develop
           git push --force origin pre-production
 
-      - name: Confirm rebase
+      - name: Create Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          echo "Branch pre-production rebased with develop."
+          gh pr create \
+            --base main \
+            --head pre-production \
+            --title "Rebase develop into pre-production" \
+            --body "This PR rebases the develop branch into pre-production. Review and merge when ready."
