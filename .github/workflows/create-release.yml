@@ -2,11 +2,11 @@ name: Create Pre-Production Branch
 
 on:
   workflow_dispatch: # 手動実行用
-    inputs:
-      branch_name:
-        description: "Branch name to create"
-        required: false
-        default: "pre-production"
+    # inputs:
+    #   branch_name:
+    #     description: "Branch name to create"
+    #     required: false
+    #     default: "pre-production"
 
 jobs:
   create-branch:
@@ -23,9 +23,9 @@ jobs:
 
       - name: Create new branch from master
         run: |
-          git checkout -b ${{ github.event.inputs.branch_name }}
-          git push origin ${{ github.event.inputs.branch_name }}
+          git checkout -b pre-production
+          git push origin pre-production
 
       - name: Confirm branch creation # ブランチ作成の確認
         run: |
-          echo "Branch '${{ github.event.inputs.branch_name }}' created from master."
+          echo "Branch pre-production created from master."
